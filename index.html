@@ -3,31 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منتدى الفراودز</title>
+    <title>منتدى الفراودز | الرسمي</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <style>
-        :root { --main: #1a1a1a; --accent: #d32f2f; --bg: #0f0f0f; --text: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-        .container { width: 95%; max-width: 450px; background: #1e1e1e; padding: 25px; border-radius: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 1px solid #333; }
+        :root { --accent: #ff0000; --bg: #0a0a0a; --card: #161616; --text: #e0e0e0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
         
+        .container { width: 95%; max-width: 500px; background: var(--card); padding: 25px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 0 30px rgba(255,0,0,0.1); }
         header { text-align: center; margin-bottom: 20px; }
-        .logo { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; box-shadow: 0 0 15px var(--accent); }
-        h2 { font-size: 1.5rem; margin-top: 10px; color: var(--accent); }
+        .logo { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--accent); padding: 3px; object-fit: cover; }
+        h2 { margin: 10px 0; color: var(--accent); letter-spacing: 1px; }
 
-        #chat-box { height: 350px; border: 1px solid #333; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 15px; background: #141414; border-radius: 12px; margin-bottom: 15px; }
-        .msg { padding: 10px 15px; border-radius: 12px; font-size: 14px; max-width: 85%; position: relative; word-wrap: break-word; }
-        .msg.admin { border-right: 4px solid var(--accent); background: #2d1616; align-self: center; text-align: center; width: 90%; }
-        .msg.user { background: #262626; align-self: flex-start; border: 1px solid #333; }
-        .msg-info { display: block; font-weight: bold; font-size: 11px; margin-bottom: 4px; color: var(--accent); }
+        #chat-box { height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 15px; background: #00000050; border-radius: 15px; border: 1px solid #222; margin-bottom: 15px; }
+        .msg { padding: 10px 14px; border-radius: 12px; font-size: 14px; position: relative; max-width: 80%; animation: fadeIn 0.3s; }
+        .msg.admin { border-left: 3px solid var(--accent); background: #3d0000; align-self: center; text-align: center; width: 85%; }
+        .msg.user { background: #222; align-self: flex-start; }
+        .msg-info { display: block; font-weight: bold; font-size: 10px; color: var(--accent); margin-bottom: 3px; }
 
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #444; border-radius: 8px; background: #222; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { opacity: 0.8; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #333; border-radius: 10px; background: #111; color: #fff; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 5px; }
         
+        .admin-panel { background: #1a0000; padding: 15px; border-radius: 15px; border: 1px solid var(--accent); margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .hidden { display: none !important; }
-        .admin-panel { background: #2d1616; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid var(--accent); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -39,26 +39,30 @@
     </header>
 
     <div id="auth-area">
-        <input type="text" id="username" placeholder="اسم المستخدم">
-        <input type="password" id="password" placeholder="كلمة المرور">
-        <button onclick="handleAuth()">دخول / إنشاء حساب</button>
+        <input type="text" id="username" placeholder="اليوزر">
+        <input type="password" id="password" placeholder="كلمة السر">
+        <button onclick="handleAuth()">دخول / تسجيل</button>
     </div>
 
     <div id="chat-area" class="hidden">
         <div id="chat-box"></div>
         <div id="input-controls">
-            <input type="text" id="msg-input" placeholder="اكتب شيئاً...">
-            <button onclick="sendMessage()">إرسال</button>
+            <input type="text" id="msg-input" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">إرسال 🚀</button>
         </div>
         
         <div id="admin-tools" class="admin-panel hidden">
-            <button id="lock-btn" onclick="toggleChat()" style="background:#000;">قفل الشات</button>
-            <input type="text" id="target-user" placeholder="اسم اليوزر للترقية" style="width: 65%;">
-            <button onclick="promoteUser()" style="width: 30%; background: #444;">ترقية</button>
+            <button onclick="toggleChat()" id="lock-btn" style="background:#444">قفل الشات</button>
+            <button onclick="clearAllMessages()" style="background:#800">حذف الشات 🗑️</button>
+            <input type="text" id="target-user" placeholder="اسم اليوزر" style="grid-column: span 2; margin:0">
+            <button onclick="promoteUser()" style="background:#1b5e20">ترقية (أدمن)</button>
+            <button onclick="demoteUser()" style="background:#333">إزالة الرتبة</button>
         </div>
-        <button onclick="logout()" style="background:#333; margin-top:10px; height: 35px; padding: 0;">خروج</button>
+        <button onclick="location.reload()" style="background:transparent; color:#666; font-size:12px; margin-top:10px;">تسجيل خروج</button>
     </div>
 </div>
+
+<audio id="msg-sound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
 
 <script>
     const firebaseConfig = {
@@ -73,18 +77,18 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    let myUser = null, myRole = 'user';
+    let myUser = null, myRole = 'user', sound = document.getElementById('msg-sound');
 
     function handleAuth() {
         const user = document.getElementById('username').value.trim();
         const pass = document.getElementById('password').value.trim();
-        if(!user || !pass) return alert("أدخل بياناتك!");
+        if(!user || !pass) return;
 
         db.ref('users/' + user).once('value', (snap) => {
             const data = snap.val();
             if (data) {
                 if (data.password === pass) loginSuccess(user, data.role);
-                else alert("كلمة السر خطأ!");
+                else alert("خطأ في كلمة السر");
             } else {
                 const role = (user === 'uohj') ? 'admin' : 'user';
                 db.ref('users/' + user).set({ password: pass, role: role });
@@ -105,7 +109,7 @@
         const input = document.getElementById('msg-input');
         if(!input.value.trim()) return;
         db.ref('settings/locked').once('value', (snap) => {
-            if(snap.val() && myRole !== 'admin') return alert("الشات مغلق!");
+            if(snap.val() && myRole !== 'admin') return alert("الشات مقفل");
             db.ref('messages').push({ user: myUser, text: input.value, role: myRole });
             input.value = "";
         });
@@ -119,10 +123,11 @@
                 const m = child.val();
                 const div = document.createElement('div');
                 div.className = `msg ${m.role === 'admin' ? 'admin' : 'user'}`;
-                div.innerHTML = `<span class="msg-info">${m.role==='admin'?'[مدير] ':''}${m.user}</span>${m.text}`;
+                div.innerHTML = `<span class="msg-info">${m.role==='admin'?'[أدمن] ':''}${m.user}</span>${m.text}`;
                 box.appendChild(div);
             });
             box.scrollTop = box.scrollHeight;
+            sound.play(); // تشغيل الصوت عند كل رسالة جديدة
         });
     }
 
@@ -130,25 +135,37 @@
         db.ref('settings/locked').on('value', (snap) => {
             const locked = snap.val();
             document.getElementById('lock-btn').innerText = locked ? "فتح الشات" : "قفل الشات";
-            if(myRole !== 'admin') document.getElementById('input-controls').classList.toggle('hidden', locked);
         });
     }
 
+    // وظائف الإدارة الجديدة
     function toggleChat() {
         db.ref('settings/locked').once('value', (snap) => {
             db.ref('settings').update({ locked: !snap.val() });
         });
     }
 
+    function clearAllMessages() {
+        if(confirm("هل تريد حذف جميع الرسائل فعلياً؟")) {
+            db.ref('messages').remove();
+        }
+    }
+
     function promoteUser() {
         const target = document.getElementById('target-user').value.trim();
         if(target) {
             db.ref('users/' + target).update({ role: 'admin' });
-            alert("تمت ترقية " + target);
+            alert("تمت ترقية " + target + " لأدمن");
         }
     }
 
-    function logout() { location.reload(); }
+    function demoteUser() {
+        const target = document.getElementById('target-user').value.trim();
+        if(target) {
+            db.ref('users/' + target).update({ role: 'user' });
+            alert("تم سحب الرتبة من " + target);
+        }
+    }
 </script>
 </body>
 </html>
