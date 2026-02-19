@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud's Forum | uohj</title>
+    <style>
+        /* --- الألوان: أسود، رصاصي، أبيض --- */
+        :root {
+            --bg-dark: #0a0a0a;
+            --panel-grey: #1a1a1a;
+            --input-grey: #2d2d2d;
+            --text-white: #ffffff;
+            --accent-white: #f0f0f0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-container {
+            width: 95%;
+            max-width: 600px;
+            background: var(--panel-grey);
+            border: 1px solid #333;
+            border-radius: 15px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.7);
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+
+        #forum-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--text-white);
+            margin-bottom: 10px;
+        }
+
+        /* واجهة الدخول */
+        #login-screen {
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        /* واجهة الشات */
+        #chat-screen {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        #chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #111;
+        }
+
+        /* الرسائل */
+        .msg {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            max-width: 85%;
+        }
+        .msg.admin-msg .msg-content {
+            border: 1px solid var(--text-white);
+            background: #222;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #444;
+            object-fit: cover;
+        }
+        .msg-content {
+            background: var(--input-grey);
+            padding: 10px 15px;
+            border-radius: 10px 0 10px 10px;
+        }
+        .user-name {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 3px;
+            display: block;
+        }
+        .admin-tag {
+            background: white;
+            color: black;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+
+        /* التحكم */
+        .controls {
+            padding: 15px;
+            background: var(--panel-grey);
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            background: var(--input-grey);
+            border: 1px solid #444;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            outline: none;
+            width: 100%;
+        }
+
+        button {
+            background: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .admin-panel {
+            background: #1a1111;
+            padding: 10px;
+            border-top: 2px solid #555;
+            display: none;
+        }
+
+        .locked-notice {
+            color: #ff4444;
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <header>
+        <img src="https://i.imgur.com/hfpLDX1.jpeg" id="forum-logo" alt="Logo">
+        <h1 style="margin:0; font-size: 24px; letter-spacing: 2px;">FRAUD'S</h1>
+    </header>
+
+    <div id="login-screen">
+        <h3>مرحباً بك</h3>
+        <input type="text" id="username" placeholder="اسم المستخدم">
+        <input type="text" id="avatar-url" placeholder="رابط صورتك الشخصية (اختياري)">
+        <button onclick="login()">دخول للمنتدى</button>
+    </div>
+
+    <div id="chat-screen">
+        <div id="lock-msg" class="locked-notice" style="display:none;">⚠️ الشات مغلق حالياً من قبل الإدارة</div>
+        <div id="chat-box"></div>
+        
+        <div id="admin-tools" class="admin-panel">
+            <span style="font-size: 12px; color: #888;">لوحة الإدارة (uohj):</span>
+            <button onclick="clearChat()" style="background: #444; color: white; padding: 5px 10px; font-size: 11px;">مسح الشات</button>
+            <button onclick="toggleLock()" id="lock-btn" style="background: #444; color: white; padding: 5px 10px; font-size: 11px;">قفل الشات</button>
+            <input type="text" id="promote-name" placeholder="اسم لترقيته" style="width: 80px; padding: 5px; font-size: 11px;">
+            <button onclick="promote()" style="background: #444; color: white; padding: 5px 10px; font-size: 11px;">ترقية</button>
+        </div>
+
+        <div class="controls" id="input-area">
+            <input type="text" id="msg-input" placeholder="اكتب رسالتك...">
+            <button onclick="sendMsg()">إرسال</button>
+        </div>
+        <button onclick="location.reload()" style="background:none; color:#555; font-size: 11px; padding: 5px;">تسجيل خروج</button>
+    </div>
+</div>
+
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
+<script>
+    let user = "";
+    let avatar = "";
+    let isAdmin = false;
+
+    function login() {
+        user = document.getElementById('username').value.trim();
+        avatar = document.getElementById('avatar-url').value.trim() || "https://ui-avatars.com/api/?name="+user+"&background=random";
+        
+        if(!user) return alert("الرجاء كتابة اسم");
+
+        // تحقق اسم الأدمن uohj
+        if(user.toLowerCase() === "uohj") {
+            isAdmin = true;
+            document.getElementById('admin-tools').style.display = "block";
+        }
+
+        document.getElementById('login-screen').style.display = "none";
+        document.getElementById('chat-screen').style.display = "flex";
+        
+        renderChat();
+        setInterval(renderChat, 2000);
+    }
+
+    function sendMsg() {
+        const isLocked = localStorage.getItem('fraud_locked') === 'true';
+        if(isLocked && !isAdmin) return alert("الشات مغلق حالياً");
+
+        const input = document.getElementById('msg-input');
+        if(!input.value.trim()) return;
+
+        let messages = JSON.parse(localStorage.getItem('fraud_msgs') || '[]');
+        const newMsg = {
+            sender: user,
+            img: avatar,
+            text: input.value,
+            time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+            isOwner: isAdmin || (localStorage.getItem('p_'+user) === 'true')
+        };
+
+        messages.push(newMsg);
+        localStorage.setItem('fraud_msgs', JSON.stringify(messages));
+        input.value = "";
+        renderChat();
+    }
+
+    function renderChat() {
+        const chatBox = document.getElementById('chat-box');
+        const messages = JSON.parse(localStorage.getItem('fraud_msgs') || '[]');
+        const isLocked = localStorage.getItem('fraud_locked') === 'true';
+
+        document.getElementById('lock-msg').style.display = isLocked ? "block" : "none";
+        document.getElementById('lock-btn').innerText = isLocked ? "فتح الشات" : "قفل الشات";
+
+        let chatHTML = "";
+        messages.forEach(m => {
+            chatHTML += `
+                <div class="msg ${m.isOwner ? 'admin-msg' : ''}">
+                    <img src="${m.img}" class="avatar">
+                    <div class="msg-content">
+                        <span class="user-name" style="color:${m.isOwner ? '#fff' : '#aaa'}">
+                            ${m.isOwner ? '<span class="admin-tag">ADMIN</span>' : ''}
+                            ${m.sender}
+                        </span>
+                        <div style="font-size:14px;">${m.text}</div>
+                        <span style="font-size:9px; color:#666; display:block;">${m.time}</span>
+                    </div>
+                </div>`;
+        });
+        
+        if (chatBox.innerHTML !== chatHTML) {
+            chatBox.innerHTML = chatHTML;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            if (user) document.getElementById('notif-sound').play().catch(()=>{});
+        }
+    }
+
+    function clearChat() {
+        if(confirm("مسح الكل؟")) { localStorage.setItem('fraud_msgs', '[]'); renderChat(); }
+    }
+
+    function toggleLock() {
+        const current = localStorage.getItem('fraud_locked') === 'true';
+        localStorage.setItem('fraud_locked', !current);
+        renderChat();
+    }
+
+    function promote() {
+        const name = document.getElementById('promote-name').value.trim();
+        if(name) {
+            localStorage.setItem('p_'+name, 'true');
+            alert("تم ترقية " + name);
+            document.getElementById('promote-name').value = "";
+        }
+    }
+</script>
+
+</body>
+</html>
