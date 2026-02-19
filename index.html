@@ -3,296 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fraud's Forum | uohj</title>
+    <title>منتدى سواليف | الإدارة</title>
     <style>
-        /* --- الألوان: أسود، رصاصي، أبيض --- */
+        /* تنسيقات الموقع CSS */
         :root {
-            --bg-dark: #0a0a0a;
-            --panel-grey: #1a1a1a;
-            --input-grey: #2d2d2d;
-            --text-white: #ffffff;
-            --accent-white: #f0f0f0;
+            --primary-color: #2563eb;
+            --admin-red: #e11d48;
+            --bg-color: #f8fafc;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-white);
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            margin: 0;
         }
 
         .main-container {
             width: 95%;
-            max-width: 600px;
-            background: var(--panel-grey);
-            border: 1px solid #333;
-            border-radius: 15px;
-            height: 90vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 30px rgba(0,0,0,0.7);
-        }
-
-        header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #333;
-        }
-
-        #forum-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid var(--text-white);
-            margin-bottom: 10px;
-        }
-
-        /* واجهة الدخول */
-        #login-screen {
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            text-align: center;
-        }
-
-        /* واجهة الشات */
-        #chat-screen {
-            display: none;
-            flex-direction: column;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        #chat-box {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background: #111;
-        }
-
-        /* الرسائل */
-        .msg {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            max-width: 85%;
-        }
-        .msg.admin-msg .msg-content {
-            border: 1px solid var(--text-white);
-            background: #222;
-        }
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #444;
-            object-fit: cover;
-        }
-        .msg-content {
-            background: var(--input-grey);
-            padding: 10px 15px;
-            border-radius: 10px 0 10px 10px;
-        }
-        .user-name {
-            font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 3px;
-            display: block;
-        }
-        .admin-tag {
+            max-width: 500px;
             background: white;
-            color: black;
-            font-size: 9px;
-            padding: 2px 5px;
-            border-radius: 3px;
-            margin-left: 5px;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* التحكم */
-        .controls {
-            padding: 15px;
-            background: var(--panel-grey);
-            border-top: 1px solid #333;
-            display: flex;
-            gap: 10px;
-        }
+        header { text-align: center; margin-bottom: 20px; }
+        #logo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-color); }
 
+        .form-group { margin-bottom: 15px; }
         input {
-            background: var(--input-grey);
-            border: 1px solid #444;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            outline: none;
             width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
         }
 
         button {
-            background: white;
-            color: black;
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
         }
+
+        button:hover { opacity: 0.9; }
+
+        .hidden { display: none !important; }
+
+        /* الشات */
+        #chat-window {
+            height: 400px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .user-msg { background: #f1f5f9; align-self: flex-start; border-bottom-right-radius: 2px; }
+        .admin-msg { background: #fee2e2; border: 1px solid var(--admin-red); align-self: flex-end; border-bottom-left-radius: 2px; }
+
+        .msg-info { font-size: 11px; font-weight: bold; display: block; margin-bottom: 4px; }
+        .badge { background: var(--admin-red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 5px; }
 
         .admin-panel {
-            background: #1a1111;
-            padding: 10px;
-            border-top: 2px solid #555;
-            display: none;
+            background: #fff1f1;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px dashed var(--admin-red);
         }
 
-        .locked-notice {
-            color: #ff4444;
-            text-align: center;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
+        .lock-notice { color: var(--admin-red); text-align: center; font-weight: bold; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="main-container">
     <header>
-        <img src="https://i.imgur.com/hfpLDX1.jpeg" id="forum-logo" alt="Logo">
-        <h1 style="margin:0; font-size: 24px; letter-spacing: 2px;">FRAUD'S</h1>
+        <img src="https://i.imgur.com/d3DZ1Zk.jpeg" id="logo" alt="Logo">
+        <h2 id="view-title">منتدى سواليف</h2>
     </header>
 
-    <div id="login-screen">
-        <h3>مرحباً بك</h3>
-        <input type="text" id="username" placeholder="اسم المستخدم">
-        <input type="text" id="avatar-url" placeholder="رابط صورتك الشخصية (اختياري)">
-        <button onclick="login()">دخول للمنتدى</button>
+    <div id="auth-box">
+        <div class="form-group">
+            <input type="text" id="user-input" placeholder="اسم المستخدم">
+        </div>
+        <div class="form-group">
+            <input type="password" id="pass-input" placeholder="كلمة المرور">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="handleAuth('login')">تسجيل دخول</button>
+            <button onclick="handleAuth('signup')" style="background: #10b981;">إنشاء حساب</button>
+        </div>
     </div>
 
-    <div id="chat-screen">
-        <div id="lock-msg" class="locked-notice" style="display:none;">⚠️ الشات مغلق حالياً من قبل الإدارة</div>
-        <div id="chat-box"></div>
+    <div id="chat-container" class="hidden">
+        <div id="lock-msg" class="lock-notice hidden">🔒 الشات مغلق حالياً من قبل الإدارة</div>
+        <div id="chat-window"></div>
         
-        <div id="admin-tools" class="admin-panel">
-            <span style="font-size: 12px; color: #888;">لوحة الإدارة (uohj):</span>
-            <button onclick="clearChat()" style="background: #444; color: white; padding: 5px 10px; font-size: 11px;">مسح الشات</button>
-            <button onclick="toggleLock()" id="lock-btn" style="background: #444; color: white; padding: 5px 10px; font-size: 11px;">قفل الشات</button>
-            <input type="text" id="promote-name" placeholder="اسم لترقيته" style="width: 80px; padding: 5px; font-size: 11px;">
-            <button onclick="promote()" style="background: #444; color: white; padding: 5px 10px; font-size: 11px;">ترقية</button>
+        <div id="send-area" style="margin-top: 15px; display: flex; gap: 5px;">
+            <input type="text" id="message-text" placeholder="اكتب رسالتك...">
+            <button onclick="sendMessage()" style="width: 80px;">إرسال</button>
         </div>
 
-        <div class="controls" id="input-area">
-            <input type="text" id="msg-input" placeholder="اكتب رسالتك...">
-            <button onclick="sendMsg()">إرسال</button>
+        <div id="admin-controls" class="admin-panel hidden">
+            <p style="margin: 0 0 10px 0; color: var(--admin-red);">🛠 لوحة تحكم الإدارة (uohj)</p>
+            <button onclick="toggleChatLock()" id="lock-btn" style="background: #334155; margin-bottom: 10px;">قفل الشات</button>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="target-user" placeholder="اسم المستخدم للترقية" style="font-size: 12px;">
+                <button onclick="promote()" style="background: #059669; font-size: 12px; width: 120px;">إعطاء رتبة</button>
+            </div>
         </div>
-        <button onclick="location.reload()" style="background:none; color:#555; font-size: 11px; padding: 5px;">تسجيل خروج</button>
+
+        <button onclick="location.reload()" style="background: #94a3b8; margin-top: 15px;">تسجيل خروج</button>
     </div>
 </div>
 
-<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
 <script>
-    let user = "";
-    let avatar = "";
-    let isAdmin = false;
+    // المنطق البرمجي JavaScript
+    let currentUser = "";
+    let userIsAdmin = false;
 
-    function login() {
-        user = document.getElementById('username').value.trim();
-        avatar = document.getElementById('avatar-url').value.trim() || "https://ui-avatars.com/api/?name="+user+"&background=random";
-        
-        if(!user) return alert("الرجاء كتابة اسم");
+    // وظيفة تسجيل الدخول والإنشاء
+    function handleAuth(type) {
+        const u = document.getElementById('user-input').value.trim();
+        const p = document.getElementById('pass-input').value.trim();
 
-        // تحقق اسم الأدمن uohj
-        if(user.toLowerCase() === "uohj") {
-            isAdmin = true;
-            document.getElementById('admin-tools').style.display = "block";
+        if (u === "" || p === "") return alert("يرجى ملء البيانات");
+
+        let users = JSON.parse(localStorage.getItem('forum_users') || '{}');
+
+        if (type === 'signup') {
+            if (users[u]) return alert("هذا المستخدم موجود مسبقاً!");
+            users[u] = btoa(p); // تشفير بسيط بـ Base64
+            localStorage.setItem('forum_users', JSON.stringify(users));
+            alert("تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.");
+        } else {
+            if (!users[u] || users[u] !== btoa(p)) return alert("خطأ في الاسم أو كلمة المرور!");
+            
+            currentUser = u;
+            if (u === "uohj") userIsAdmin = true;
+            startChat();
         }
-
-        document.getElementById('login-screen').style.display = "none";
-        document.getElementById('chat-screen').style.display = "flex";
-        
-        renderChat();
-        setInterval(renderChat, 2000);
     }
 
-    function sendMsg() {
-        const isLocked = localStorage.getItem('fraud_locked') === 'true';
-        if(isLocked && !isAdmin) return alert("الشات مغلق حالياً");
-
-        const input = document.getElementById('msg-input');
-        if(!input.value.trim()) return;
-
-        let messages = JSON.parse(localStorage.getItem('fraud_msgs') || '[]');
-        const newMsg = {
-            sender: user,
-            img: avatar,
-            text: input.value,
-            time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-            isOwner: isAdmin || (localStorage.getItem('p_'+user) === 'true')
-        };
-
-        messages.push(newMsg);
-        localStorage.setItem('fraud_msgs', JSON.stringify(messages));
-        input.value = "";
-        renderChat();
+    function startChat() {
+        document.getElementById('auth-box').classList.add('hidden');
+        document.getElementById('chat-container').classList.remove('hidden');
+        if (userIsAdmin) document.getElementById('admin-controls').classList.remove('hidden');
+        updateChat();
     }
 
-    function renderChat() {
-        const chatBox = document.getElementById('chat-box');
-        const messages = JSON.parse(localStorage.getItem('fraud_msgs') || '[]');
-        const isLocked = localStorage.getItem('fraud_locked') === 'true';
+    function sendMessage() {
+        const isLocked = localStorage.getItem('chat_locked') === 'true';
+        if (isLocked && !userIsAdmin) return alert("الشات مغلق!");
 
-        document.getElementById('lock-msg').style.display = isLocked ? "block" : "none";
+        const text = document.getElementById('message-text').value.trim();
+        if (!text) return;
+
+        let msgs = JSON.parse(localStorage.getItem('forum_messages') || '[]');
+        let isPromoted = localStorage.getItem('rank_' + currentUser) === 'admin';
+
+        msgs.push({
+            sender: currentUser,
+            text: text,
+            isAdmin: userIsAdmin || isPromoted
+        });
+
+        localStorage.setItem('forum_messages', JSON.stringify(msgs));
+        document.getElementById('message-text').value = "";
+        updateChat();
+    }
+
+    function updateChat() {
+        const win = document.getElementById('chat-window');
+        const msgs = JSON.parse(localStorage.getItem('forum_messages') || '[]');
+        const isLocked = localStorage.getItem('chat_locked') === 'true';
+
+        // تحديث واجهة القفل
+        document.getElementById('lock-msg').classList.toggle('hidden', !isLocked);
+        document.getElementById('send-area').classList.toggle('hidden', isLocked && !userIsAdmin);
         document.getElementById('lock-btn').innerText = isLocked ? "فتح الشات" : "قفل الشات";
 
-        let chatHTML = "";
-        messages.forEach(m => {
-            chatHTML += `
-                <div class="msg ${m.isOwner ? 'admin-msg' : ''}">
-                    <img src="${m.img}" class="avatar">
-                    <div class="msg-content">
-                        <span class="user-name" style="color:${m.isOwner ? '#fff' : '#aaa'}">
-                            ${m.isOwner ? '<span class="admin-tag">ADMIN</span>' : ''}
-                            ${m.sender}
-                        </span>
-                        <div style="font-size:14px;">${m.text}</div>
-                        <span style="font-size:9px; color:#666; display:block;">${m.time}</span>
-                    </div>
-                </div>`;
-        });
-        
-        if (chatBox.innerHTML !== chatHTML) {
-            chatBox.innerHTML = chatHTML;
-            chatBox.scrollTop = chatBox.scrollHeight;
-            if (user) document.getElementById('notif-sound').play().catch(()=>{});
-        }
+        win.innerHTML = msgs.map(m => `
+            <div class="msg ${m.isAdmin ? 'admin-msg' : 'user-msg'}">
+                <span class="msg-info">
+                    ${m.isAdmin ? '<span class="badge">إدارة</span>' : ''}
+                    ${m.sender}
+                </span>
+                ${m.text}
+            </div>
+        `).join('');
+        win.scrollTop = win.scrollHeight;
     }
 
-    function clearChat() {
-        if(confirm("مسح الكل؟")) { localStorage.setItem('fraud_msgs', '[]'); renderChat(); }
-    }
-
-    function toggleLock() {
-        const current = localStorage.getItem('fraud_locked') === 'true';
-        localStorage.setItem('fraud_locked', !current);
-        renderChat();
+    // وظائف الأدمن uohj
+    function toggleChatLock() {
+        const current = localStorage.getItem('chat_locked') === 'true';
+        localStorage.setItem('chat_locked', !current);
+        updateChat();
     }
 
     function promote() {
-        const name = document.getElementById('promote-name').value.trim();
-        if(name) {
-            localStorage.setItem('p_'+name, 'true');
-            alert("تم ترقية " + name);
-            document.getElementById('promote-name').value = "";
-        }
+        const target = document.getElementById('target-user').value.trim();
+        if (!target) return;
+        localStorage.setItem('rank_' + target, 'admin');
+        alert("تمت ترقية " + target + " إلى رتبة إدارة");
+        document.getElementById('target-user').value = "";
     }
+
+    // تحديث الشات تلقائياً كل ثانية لمتابعة الجديد
+    setInterval(updateChat, 1000);
 </script>
 
 </body>
